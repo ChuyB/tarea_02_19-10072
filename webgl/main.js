@@ -23,10 +23,10 @@ const fragmentShaderText = [
 
 // Gets the canvas element and the WebGL context
 const canvas = document.getElementById("canvas");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = 800;
+canvas.height = 800;
 const gl = canvas.getContext("webgl");
-gl.viewport(0, 0, window.innerWidth, window.innerHeight);
+gl.viewport(0, 0, 800, 800);
 
 // If WebGL is not supported, alert the user
 if (!gl) {
