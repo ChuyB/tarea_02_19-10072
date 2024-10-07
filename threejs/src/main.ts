@@ -1,10 +1,12 @@
 import "./style.css";
 import * as THREE from "three";
 
-// Settings
+// Configuración del color y posición de la cámara
 const bgColor = 0x1b1e2b;
 const cameraPosition = 1;
 
+// Se crea la escena, la cámara y se cambia el color de fondo
+// de la escena
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(bgColor);
 const camera = new THREE.PerspectiveCamera(
@@ -16,24 +18,29 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.z = cameraPosition;
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth, window.innerHeight); // Tamaño del renderizador
 
-document.body.appendChild(renderer.domElement);
+document.body.appendChild(renderer.domElement); // Se añade el renderizador al body
 
+// Creación de la geometría
 const triangleGeometry = new THREE.BufferGeometry();
+// Posición de cada vértice del triángulo
 const vertexArray = [
   -0.5, -0.435, 0,
   0.5, -0.435, 0,
   0, 0.435, 0
 ];
+// Color de cada vértice del triángulo
 const vertexColors = [
   1, 0, 0,
   0, 1, 0,
   0, 0, 1
 ];
+// Se añade la posición y el color a la geometría
 triangleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertexArray, 3));
 triangleGeometry.setAttribute('vertColor', new THREE.Float32BufferAttribute(vertexColors, 3))
 
+// Definición de los shaders
 const triangleMaterial = new THREE.ShaderMaterial({
   vertexShader: `
   precision mediump float;
@@ -54,7 +61,9 @@ const triangleMaterial = new THREE.ShaderMaterial({
   vertexColors: true
 });
 
+// Se crea el triángulo como un Mesh
 const figure = new THREE.Mesh(triangleGeometry, triangleMaterial);
-scene.add(figure);
+scene.add(figure); // Se añade el triángulo a la escena
 
+// Loop de renderizado
 renderer.setAnimationLoop(() => renderer.render(scene, camera));

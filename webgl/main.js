@@ -1,6 +1,6 @@
 import "./style.css";
 
-// Vertex shader and fragment shader code
+// Código del shader para los vértices
 const vertexShaderText = [
   "precision mediump float;",
   "attribute vec2 vertPosition;",
@@ -12,6 +12,8 @@ const vertexShaderText = [
   "  gl_Position = vec4(vertPosition, 0.0, 1.0);",
   "}",
 ].join("\n");
+
+// Código para el shader del fragmento
 const fragmentShaderText = [
   "precision mediump float;",
   "varying vec3 fragColor;",
@@ -21,29 +23,32 @@ const fragmentShaderText = [
   "}",
 ].join("\n");
 
-// Gets the canvas element and the WebGL context
-const canvas = document.getElementById("canvas");
+const canvas = document.getElementById("canvas"); // Elemento del canvas
 canvas.width = 800;
 canvas.height = 800;
 const gl = canvas.getContext("webgl");
-gl.viewport(0, 0, 800, 800);
+gl.viewport(0, 0, 800, 800); // Se crea el viewport de webgl
 
-// If WebGL is not supported, alert the user
+// Si WebGL no es soportado, se muestra un mensaje de alerta
 if (!gl) {
   alert("WebGL not supported");
 }
 
-// Sets canvas background color
-gl.clearColor(0.24, 0.24, 0.24, 1.0); // Color is slate gray
+// Color de fondo
+gl.clearColor(0.24, 0.24, 0.24, 1.0);
 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clears the color buffer to set the color
 
-// Creates shaders, sets the source and compiles them
+// Shader de los vértices
 const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+// Shader de los fragmentos
 const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+// Se añade el código del shader a la referencia de los shaders
 gl.shaderSource(vertexShader, vertexShaderText);
 gl.shaderSource(fragmentShader, fragmentShaderText);
 
+// Se compilan los shaders
 gl.compileShader(vertexShader);
+// Si hay un error al compilar el shader de los vértices, se muestra un mensaje de error
 if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
   console.error(
     "ERROR compiling vertex shader!",
@@ -58,28 +63,32 @@ if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
   );
 }
 
-// Creates program, attach shaders, links and uses it
+// Programa de shaders
 const program = gl.createProgram();
-gl.attachShader(program, vertexShader);
-gl.attachShader(program, fragmentShader);
-gl.linkProgram(program);
+gl.attachShader(program, vertexShader); // Añade el vertexShader al programa
+gl.attachShader(program, fragmentShader); // Añade el fragmentShader al programa
+gl.linkProgram(program); // Se linkea el programa
 
-// Sets triangle vertices coordinates
+// Ubicación de los vértices y color de los mismos
+// Cada 5 valores es un vértice,
+// los primeros 2 son la posición y los siguientes 3 son el color
 const triangleVertices = [
   0.0, 0.435, 1.0, 0.0, 0.0, 
   -0.5, -0.435, 0.0, 1.0, 0.0, 
   0.5, -0.435, 0.0, 0.0, 1.0,
 ];
 
+// Se crea un buffer para los vértices
 const triangleVertexBufferObject = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexBufferObject);
+// Se añade al buffer los vértices
 gl.bufferData(
   gl.ARRAY_BUFFER,
   new Float32Array(triangleVertices),
   gl.STATIC_DRAW,
 );
 
-// Sets position attributes from the vertex buffer object
+// Se obtiene la ubicación de los atributos de los vértices
 const positionAttribLocation = gl.getAttribLocation(program, "vertPosition");
 gl.vertexAttribPointer(
   positionAttribLocation,
@@ -91,7 +100,7 @@ gl.vertexAttribPointer(
 );
 gl.enableVertexAttribArray(positionAttribLocation);
 
-// Sets color attributes from the vertex buffer object
+// Se obtiene el color de los atributos de los vértices
 const colorAttribLocation = gl.getAttribLocation(program, "vertColor");
 gl.vertexAttribPointer(
   colorAttribLocation,
@@ -99,12 +108,12 @@ gl.vertexAttribPointer(
   gl.FLOAT,
   gl.FALSE,
   5 * Float32Array.BYTES_PER_ELEMENT,
-  2 * Float32Array.BYTES_PER_ELEMENT, // Color is offset by 2 elements in the array
+  2 * Float32Array.BYTES_PER_ELEMENT, // El color comienza en el 3er valor de los 5 del arreglo
 );
 gl.enableVertexAttribArray(colorAttribLocation);
 
-// Sets the shader program to use
+// Se usa el programa de shaders
 gl.useProgram(program);
 
-// Draws the triangle
+// Dibuja el triángulo
 gl.drawArrays(gl.TRIANGLES, 0, 3);
